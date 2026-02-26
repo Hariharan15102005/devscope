@@ -1,0 +1,10 @@
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Java/Maven
+backend/target/
+
+# Environment
+.env
+*.local
