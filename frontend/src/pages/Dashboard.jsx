@@ -34,6 +34,10 @@ export default function Dashboard() {
   const { data, loading, error, refetch } = useDashboard(projectId);
   const navigate = useNavigate();
 
+  const navigateToStructure = (search = '') => {
+    navigate(`/structure${search}`, { state: { fromDashboard: true } });
+  };
+
   const layerData = useMemo(
     () =>
       Object.entries(data?.layerDistribution ?? {}).map(([label, value]) => ({
@@ -97,6 +101,7 @@ export default function Dashboard() {
           icon="📄"
           tone={getCountTone(data.totalClasses)}
           tooltip="Total number of classes"
+          onClick={() => navigateToStructure()}
         />
         <StatCard
           label="Total Files"
@@ -123,7 +128,14 @@ export default function Dashboard() {
 
       <section className="ds-grid ds-chart-grid">
         <ChartContainer title="Layer Distribution">
-          {layerData.length ? <PieChart data={layerData} /> : <EmptyState title="No layer data." />}
+          {layerData.length ? (
+            <PieChart
+              data={layerData}
+              onItemClick={(layer) => navigateToStructure(`?filter=${encodeURIComponent(layer)}`)}
+            />
+          ) : (
+            <EmptyState title="No layer data." />
+          )}
         </ChartContainer>
         <ChartContainer title="Complexity Distribution">
           {complexityData.length ? <BarChart data={complexityData} /> : <EmptyState title="No complexity data." />}
@@ -141,7 +153,7 @@ export default function Dashboard() {
                   <li key={item.className}>
                     <button
                       type="button"
-                      onClick={() => navigate(`/metrics?class=${encodeURIComponent(item.className)}`)}
+                      onClick={() => navigateToStructure(`?class=${encodeURIComponent(item.className)}`)}
                     >
                       <span>{item.className}</span>
                       <strong>{item.riskScore}</strong>

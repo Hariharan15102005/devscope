@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Dashboard from '../pages/Dashboard';
 import Graph from '../pages/Graph';
 import Metrics from '../pages/Metrics';
+import StructureExplorer from '../pages/StructureExplorer';
 import Violations from '../pages/Violations';
 
 export default function AppRoutes() {
@@ -11,6 +12,7 @@ export default function AppRoutes() {
       <Route path="/metrics" element={<Metrics />} />
       <Route path="/violations" element={<Violations />} />
       <Route path="/graph" element={<Graph />} />
+      <Route path="/structure" element={<StructureExplorer />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

@@ -113,6 +113,10 @@ body,
   transform: translateY(-3px);
 }
 
+.ds-stat-card-clickable {
+  cursor: pointer;
+}
+
 .ds-stat-header {
   display: flex;
   justify-content: space-between;
@@ -178,6 +182,19 @@ body,
   grid-template-columns: 10px 1fr auto;
   gap: 8px;
   align-items: center;
+}
+
+.ds-legend-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.ds-legend-btn:hover {
+  color: var(--ds-primary);
 }
 
 .ds-total-row {
@@ -301,6 +318,109 @@ body,
   color: var(--ds-primary);
 }
 
+.ds-structure-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+  gap: 16px;
+}
+
+.ds-structure-tree-card h3 {
+  margin-top: 0;
+}
+
+.ds-structure-filter-badge {
+  display: inline-block;
+  border: 1px solid var(--ds-primary);
+  color: var(--ds-primary);
+  background: var(--ds-surface);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.ds-structure-packages,
+.ds-structure-classes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.ds-structure-packages {
+  margin-top: 12px;
+}
+
+.ds-structure-classes {
+  margin-top: 8px;
+  margin-left: 20px;
+}
+
+.ds-structure-package-btn,
+.ds-structure-class-btn {
+  width: 100%;
+  border: 1px solid var(--ds-border);
+  border-radius: 10px;
+  background: var(--ds-surface);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ds-structure-package-btn {
+  justify-content: flex-start;
+}
+
+.ds-structure-class-btn small {
+  color: var(--ds-muted);
+}
+
+.ds-structure-class-btn.is-selected {
+  border: 2px solid var(--ds-primary);
+}
+
+.ds-structure-class-btn.is-filtered {
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.35);
+}
+
+.ds-structure-detail-empty {
+  min-height: 140px;
+  display: grid;
+  place-items: center;
+  color: var(--ds-muted);
+}
+
+.ds-structure-detail-card h3 {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.ds-structure-detail-fullname {
+  margin-top: 0;
+  color: var(--ds-muted);
+}
+
+.ds-structure-detail-grid {
+  margin: 12px 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.ds-structure-detail-grid dt {
+  color: var(--ds-muted);
+  font-size: 13px;
+}
+
+.ds-structure-detail-grid dd {
+  margin: 4px 0 0;
+  font-weight: 600;
+}
+
 @keyframes ds-spin {
   to {
     transform: rotate(360deg);
@@ -319,5 +439,9 @@ body,
   .ds-pie-grid {
     grid-template-columns: 1fr;
     justify-items: center;
+  }
+
+  .ds-structure-layout {
+    grid-template-columns: 1fr;
   }
 }

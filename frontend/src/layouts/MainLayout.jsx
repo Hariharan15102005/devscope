@@ -1,7 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useProjectContext } from '../store/ProjectContext';
 
 const links = [
   { to: '/', label: 'Dashboard' },
+  { to: '/structure', label: '🌳 Structure Explorer', requiresProject: true },
   { to: '/metrics', label: 'Metrics' },
   { to: '/violations', label: 'Violations' },
   { to: '/graph', label: 'Dependency Graph' },
@@ -9,13 +11,14 @@ const links = [
 
 export default function MainLayout({ children, title = 'DevScope' }) {
   const location = useLocation();
+  const { projectId } = useProjectContext();
 
   return (
     <div className="ds-shell">
       <aside className="ds-sidebar">
         <h1>DevScope</h1>
         <nav>
-          {links.map((item) => (
+          {links.filter((item) => !item.requiresProject || projectId).map((item) => (
             <Link
               key={item.to}
               className={`ds-nav-link ${location.pathname === item.to ? 'active' : ''}`}

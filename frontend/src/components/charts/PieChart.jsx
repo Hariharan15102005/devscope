@@ -16,7 +16,7 @@ function buildGradient(data) {
   return `conic-gradient(${segments.join(', ')})`;
 }
 
-export default function PieChart({ data }) {
+export default function PieChart({ data, onItemClick }) {
   const chartData = data || [];
   const total = chartData.reduce((sum, item) => sum + item.value, 0);
 
@@ -27,7 +27,13 @@ export default function PieChart({ data }) {
         {chartData.map((item, index) => (
           <li key={item.label}>
             <span className="ds-dot" style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }} />
-            <span>{item.label}</span>
+            {onItemClick ? (
+              <button className="ds-legend-btn" type="button" onClick={() => onItemClick(item.label)}>
+                {item.label}
+              </button>
+            ) : (
+              <span>{item.label}</span>
+            )}
             <strong>{item.value}</strong>
           </li>
         ))}
