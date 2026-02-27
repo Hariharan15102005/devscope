@@ -38,6 +38,10 @@ export default function Dashboard() {
     navigate(`/structure${search}`, { state: { fromDashboard: true } });
   };
 
+  const navigateToGraphFocus = (className) => {
+    navigate(`/graph?focus=${encodeURIComponent(className)}`);
+  };
+
   const layerData = useMemo(
     () =>
       Object.entries(data?.layerDistribution ?? {}).map(([label, value]) => ({
@@ -131,7 +135,7 @@ export default function Dashboard() {
           {layerData.length ? (
             <PieChart
               data={layerData}
-              onItemClick={(layer) => navigateToStructure(`?filter=${encodeURIComponent(layer)}`)}
+              onItemClick={(layer) => navigate(`/graph?layer=${encodeURIComponent(layer)}`)}
             />
           ) : (
             <EmptyState title="No layer data." />
@@ -153,7 +157,7 @@ export default function Dashboard() {
                   <li key={item.className}>
                     <button
                       type="button"
-                      onClick={() => navigateToStructure(`?class=${encodeURIComponent(item.className)}`)}
+                      onClick={() => navigateToGraphFocus(item.className)}
                     >
                       <span>{item.className}</span>
                       <strong>{item.riskScore}</strong>

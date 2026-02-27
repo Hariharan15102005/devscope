@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import ClassDetailPanel from '../components/panels/ClassDetailPanel';
 import EmptyState from '../components/common/EmptyState';
 import ErrorBox from '../components/common/ErrorBox';
@@ -11,6 +11,7 @@ import { useProjectContext } from '../store/ProjectContext';
 export default function StructureExplorer() {
   const { projectId } = useProjectContext();
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queryParams = new URLSearchParams(location.search);
@@ -219,7 +220,14 @@ export default function StructureExplorer() {
         </article>
 
         <article>
-          {loadingDetail ? <Loader label="Loading class details..." /> : <ClassDetailPanel classDetail={selectedClassDetail} />}
+          {loadingDetail ? (
+            <Loader label="Loading class details..." />
+          ) : (
+            <ClassDetailPanel
+              classDetail={selectedClassDetail}
+              onViewInGraph={(className) => navigate(`/graph?focus=${encodeURIComponent(className)}`)}
+            />
+          )}
         </article>
       </section>
     </MainLayout>

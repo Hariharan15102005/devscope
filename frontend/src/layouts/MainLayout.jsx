@@ -7,6 +7,7 @@ const links = [
   { to: '/metrics', label: 'Metrics' },
   { to: '/violations', label: 'Violations' },
   { to: '/graph', label: 'Dependency Graph' },
+  { to: '/insights', label: 'Insights' },
 ];
 
 export default function MainLayout({ children, title = 'DevScope' }) {

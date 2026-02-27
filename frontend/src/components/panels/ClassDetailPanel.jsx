@@ -1,4 +1,4 @@
-export default function ClassDetailPanel({ classDetail }) {
+export default function ClassDetailPanel({ classDetail, onViewInGraph }) {
   if (!classDetail) {
     return (
       <section className="ds-card ds-structure-detail-empty">
@@ -30,6 +30,9 @@ export default function ClassDetailPanel({ classDetail }) {
         </div>
       </dl>
       <p>{classDetail.description}</p>
+      <button type="button" className="ds-btn" onClick={() => onViewInGraph?.(classDetail.fullName)}>
+        View in Graph
+      </button>
     </section>
   );
 }
