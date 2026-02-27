@@ -3,7 +3,8 @@ package com.devscope.service;
 import com.devscope.dto.response.ClassDetailResponse;
 import com.devscope.dto.response.StructureTreeResponse;
 import org.springframework.stereotype.Service;
-
+// This service provides the structure tree and class details for the application. In a real implementation,
+// it would likely integrate with the graph service to derive class relationships and metrics, but here we use a static dataset for demonstration purposes.
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
