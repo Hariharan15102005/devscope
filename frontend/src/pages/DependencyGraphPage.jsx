@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import EmptyState from '../components/common/EmptyState';
 import ErrorBox from '../components/common/ErrorBox';
@@ -9,19 +9,6 @@ import GraphToolbar from '../components/graph/GraphToolbar';
 import useGraph from '../hooks/useGraph';
 import MainLayout from '../layouts/MainLayout';
 import { useProjectContext } from '../store/ProjectContext';
-
-function resolveNodeByQuery(nodes, queryValue) {
-  if (!queryValue) {
-    return null;
-  }
-
-  const normalized = queryValue.trim().toLowerCase();
-  return (
-    nodes.find((item) => item.fullName.toLowerCase() === normalized) ||
-    nodes.find((item) => item.name.toLowerCase() === normalized) ||
-    null
-  );
-}
 
 export default function DependencyGraphPage() {
   const { projectId } = useProjectContext();
@@ -36,54 +23,36 @@ export default function DependencyGraphPage() {
     refetch,
     selectedNodeId,
     setSelectedNodeId,
+    selectedNode,
     selectedNodeDetail,
-    loadingNodeDetail,
     filters,
     setFilters,
     highlightedCycles,
     setHighlightedCycles,
     layerOptions,
+    applyQueryParams,
   } = useGraph(projectId);
-
-  const selectedNode = useMemo(() => {
-    return nodes.find((node) => node.id === selectedNodeId) || null;
-  }, [nodes, selectedNodeId]);
 
   useEffect(() => {
     if (!nodes.length) {
       return;
     }
 
-    const params = new URLSearchParams(location.search);
-    const focusNode = params.get('focus');
-    const highlight = params.get('highlight');
-    const layer = params.get('layer');
-
-    // Navigation integration: react to URL query changes from Dashboard/Structure/Metrics/Violations/Insights.
-    if (layer) {
-      setFilters((prev) => ({ ...prev, layer }));
+    // URL-driven cross-navigation integration from Dashboard/Structure/Metrics/Violations/Insights.
+    const queryIntent = applyQueryParams(location.search);
+    if (queryIntent.focusNodeId) {
+      graphRef.current?.expandLayout();
+      graphRef.current?.focusNode(queryIntent.focusNodeId);
     }
 
-    if (highlight === 'cycles') {
-      setHighlightedCycles(true);
-      setFilters((prev) => ({ ...prev, showCyclesOnly: true }));
-
-      const firstCycleEdge = edges.find((edge) => edge.cycle);
-      if (firstCycleEdge) {
-        setSelectedNodeId(firstCycleEdge.source);
-        graphRef.current?.focusNode(firstCycleEdge.source);
+    if (queryIntent.shouldShowCyclesOnly) {
+      const cycleEdge = edges.find((edge) => edge.isCycle);
+      if (cycleEdge) {
+        setSelectedNodeId(cycleEdge.source);
+        graphRef.current?.focusNode(cycleEdge.source);
       }
     }
-
-    if (focusNode) {
-      const resolvedNode = resolveNodeByQuery(nodes, focusNode);
-      if (resolvedNode) {
-        setSelectedNodeId(resolvedNode.id);
-        graphRef.current?.expandLayout();
-        graphRef.current?.focusNode(resolvedNode.id);
-      }
-    }
-  }, [location.search, nodes, edges, setFilters, setHighlightedCycles, setSelectedNodeId]);
+  }, [location.search, nodes, edges, applyQueryParams, setSelectedNodeId]);
 
   const breadcrumb = selectedNode
     ? `Dashboard > Dependency Graph > ${selectedNode.name}`
@@ -137,7 +106,7 @@ export default function DependencyGraphPage() {
         onLayerChange={handleLayerChange}
         onToggleCyclesOnly={handleToggleCyclesOnly}
         onResetLayout={() => graphRef.current?.resetLayout()}
-        onCenter={() => graphRef.current?.centerGraph()}
+        onFitToScreen={() => graphRef.current?.fitToScreen()}
         onClearSelection={handleClearSelection}
       />
 
@@ -152,7 +121,7 @@ export default function DependencyGraphPage() {
           onNodeSelect={setSelectedNodeId}
         />
 
-        <GraphSidePanel isOpen={Boolean(selectedNodeId)} detail={selectedNodeDetail} loading={loadingNodeDetail} />
+        <GraphSidePanel isOpen={Boolean(selectedNodeId)} detail={selectedNodeDetail} loading={false} />
       </section>
     </MainLayout>
   );

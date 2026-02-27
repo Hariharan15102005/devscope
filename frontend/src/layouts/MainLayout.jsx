@@ -8,6 +8,7 @@ const links = [
   { to: '/violations', label: 'Violations' },
   { to: '/graph', label: 'Dependency Graph' },
   { to: '/insights', label: 'Insights' },
+  { to: '/compare', label: 'Compare' },
 ];
 
 export default function MainLayout({ children, title = 'DevScope' }) {

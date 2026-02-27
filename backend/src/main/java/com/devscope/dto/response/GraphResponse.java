@@ -1,5 +1,6 @@
 package com.devscope.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class GraphResponse {
@@ -25,17 +26,19 @@ public class GraphResponse {
     public static class GraphNode {
         private String id;
         private String name;
-        private String fullName;
-        private String layer;
+        private String type;
+        private int dependencyCount;
+        private int dependentCount;
+        @JsonProperty("isHighCoupling")
+        private boolean highCoupling;
 
         public GraphNode() {
         }
 
-        public GraphNode(String id, String name, String fullName, String layer) {
+        public GraphNode(String id, String name, String type) {
             this.id = id;
             this.name = name;
-            this.fullName = fullName;
-            this.layer = layer;
+            this.type = type;
         }
 
         public String getId() {
@@ -54,26 +57,43 @@ public class GraphResponse {
             this.name = name;
         }
 
-        public String getFullName() {
-            return fullName;
+        public String getType() {
+            return type;
         }
 
-        public void setFullName(String fullName) {
-            this.fullName = fullName;
+        public void setType(String type) {
+            this.type = type;
         }
 
-        public String getLayer() {
-            return layer;
+        public int getDependencyCount() {
+            return dependencyCount;
         }
 
-        public void setLayer(String layer) {
-            this.layer = layer;
+        public void setDependencyCount(int dependencyCount) {
+            this.dependencyCount = dependencyCount;
+        }
+
+        public int getDependentCount() {
+            return dependentCount;
+        }
+
+        public void setDependentCount(int dependentCount) {
+            this.dependentCount = dependentCount;
+        }
+
+        public boolean isHighCoupling() {
+            return highCoupling;
+        }
+
+        public void setHighCoupling(boolean highCoupling) {
+            this.highCoupling = highCoupling;
         }
     }
 
     public static class GraphEdge {
         private String source;
         private String target;
+        @JsonProperty("isCycle")
         private boolean cycle;
 
         public GraphEdge() {

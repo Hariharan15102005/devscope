@@ -10,19 +10,6 @@ async function getGraph(projectId) {
   return response.json();
 }
 
-async function getNodeDetail(projectId, nodeId) {
-  const response = await fetch(
-    `${API_BASE_URL}/api/graph/${encodeURIComponent(projectId)}/node/${encodeURIComponent(nodeId)}`
-  );
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch graph node details (${response.status})`);
-  }
-
-  return response.json();
-}
-
 export default {
   getGraph,
-  getNodeDetail,
 };

@@ -6,7 +6,7 @@ public class GraphNodeDetailResponse {
     private String id;
     private String name;
     private String fullName;
-    private String layer;
+    private String type;
     private int dependencyCount;
     private int dependentCount;
     private List<String> outgoingDependencies;
@@ -36,12 +36,12 @@ public class GraphNodeDetailResponse {
         this.fullName = fullName;
     }
 
-    public String getLayer() {
-        return layer;
+    public String getType() {
+        return type;
     }
 
-    public void setLayer(String layer) {
-        this.layer = layer;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getDependencyCount() {

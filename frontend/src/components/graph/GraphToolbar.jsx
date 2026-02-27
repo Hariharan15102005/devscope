@@ -4,7 +4,7 @@ export default function GraphToolbar({
   onLayerChange,
   onToggleCyclesOnly,
   onResetLayout,
-  onCenter,
+  onFitToScreen,
   onClearSelection,
 }) {
   return (
@@ -33,8 +33,8 @@ export default function GraphToolbar({
         <button type="button" className="ds-btn" onClick={onResetLayout}>
           Reset Layout
         </button>
-        <button type="button" className="ds-btn" onClick={onCenter}>
-          Center Graph
+        <button type="button" className="ds-btn" onClick={onFitToScreen}>
+          Fit to Screen
         </button>
         <button type="button" className="ds-btn" onClick={onClearSelection}>
           Clear Selection

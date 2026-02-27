@@ -3,16 +3,13 @@ import Loader from '../common/Loader';
 
 export default function GraphSidePanel({ isOpen, detail, loading }) {
   const navigate = useNavigate();
-
-  if (!isOpen) {
-    return null;
-  }
+  const layerType = detail?.type ? `${detail.type.charAt(0)}${detail.type.slice(1).toLowerCase()}` : 'Unknown';
 
   return (
-    <aside className="ds-card ds-graph-sidepanel">
+    <aside className={`ds-card ds-graph-sidepanel ${isOpen ? 'is-open' : 'is-collapsed'}`}>
       {loading ? <Loader label="Loading class details..." /> : null}
 
-      {!loading && detail ? (
+      {!loading && detail && isOpen ? (
         <>
           <h3>{detail.name}</h3>
           <p className="ds-structure-detail-fullname">{detail.fullName}</p>
@@ -20,7 +17,7 @@ export default function GraphSidePanel({ isOpen, detail, loading }) {
           <dl className="ds-structure-detail-grid">
             <div>
               <dt>Layer</dt>
-              <dd>{detail.layer}</dd>
+              <dd>{layerType}</dd>
             </div>
             <div>
               <dt>Dependencies</dt>
@@ -68,9 +65,14 @@ export default function GraphSidePanel({ isOpen, detail, loading }) {
             >
               View Violations
             </button>
+            <button type="button" className="ds-btn" onClick={() => navigate(`/insights?class=${encodeURIComponent(detail.fullName)}`)}>
+              View Insights
+            </button>
           </div>
         </>
       ) : null}
+
+      {!loading && !detail && isOpen ? <div className="ds-structure-detail-empty">Select a class to inspect impact.</div> : null}
     </aside>
   );
 }

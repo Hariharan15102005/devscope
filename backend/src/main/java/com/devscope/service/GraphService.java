@@ -3,7 +3,7 @@ package com.devscope.service;
 import com.devscope.dto.response.GraphNodeDetailResponse;
 import com.devscope.dto.response.GraphResponse;
 import org.springframework.stereotype.Service;
-// This service provides graph data and node details for the application. In a real implementation,
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,10 +13,10 @@ import java.util.Map;
 @Service
 public class GraphService {
 
-    private static final String CONTROLLER = "Controller";
-    private static final String SERVICE = "Service";
-    private static final String REPOSITORY = "Repository";
-    private static final String OTHER = "Other";
+    private static final String CONTROLLER = "CONTROLLER";
+    private static final String SERVICE = "SERVICE";
+    private static final String REPOSITORY = "REPOSITORY";
+    private static final String OTHER = "OTHER";
 
     private final Map<String, GraphResponse.GraphNode> nodeIndex;
     private final List<GraphResponse.GraphEdge> edges;
@@ -29,7 +29,16 @@ public class GraphService {
 
     public GraphResponse getGraph(String projectId) {
         GraphResponse response = new GraphResponse();
-        response.setNodes(new ArrayList<>(nodeIndex.values()));
+        List<GraphResponse.GraphNode> nodes = new ArrayList<>(nodeIndex.values());
+        for (GraphResponse.GraphNode node : nodes) {
+            int dependencyCount = (int) edges.stream().filter(edge -> edge.getSource().equals(node.getId())).count();
+            int dependentCount = (int) edges.stream().filter(edge -> edge.getTarget().equals(node.getId())).count();
+            node.setDependencyCount(dependencyCount);
+            node.setDependentCount(dependentCount);
+            node.setHighCoupling(dependencyCount + dependentCount >= 4);
+        }
+
+        response.setNodes(nodes);
         response.setEdges(edges);
         return response;
     }
@@ -65,8 +74,8 @@ public class GraphService {
         GraphNodeDetailResponse detail = new GraphNodeDetailResponse();
         detail.setId(node.getId());
         detail.setName(node.getName());
-        detail.setFullName(node.getFullName());
-        detail.setLayer(node.getLayer());
+        detail.setFullName(node.getId());
+        detail.setType(node.getType());
         detail.setDependencyCount(outgoing.size());
         detail.setDependentCount(incoming.size());
         detail.setOutgoingDependencies(outgoing);
@@ -120,7 +129,7 @@ public class GraphService {
     private void addNode(String fullName, String layer) {
         int lastDot = fullName.lastIndexOf('.');
         String name = lastDot > -1 ? fullName.substring(lastDot + 1) : fullName;
-        nodeIndex.put(fullName, new GraphResponse.GraphNode(fullName, name, fullName, layer));
+        nodeIndex.put(fullName, new GraphResponse.GraphNode(fullName, name, layer));
     }
 
     private void addEdge(String source, String target, boolean cycle) {
