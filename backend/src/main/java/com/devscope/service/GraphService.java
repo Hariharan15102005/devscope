@@ -3,7 +3,7 @@ package com.devscope.service;
 import com.devscope.dto.response.GraphNodeDetailResponse;
 import com.devscope.dto.response.GraphResponse;
 import org.springframework.stereotype.Service;
-
+// This service provides graph data and node details for the application. In a real implementation,
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
