@@ -1,6 +1,5 @@
 package com.devscope.rules;
 
-import com.devscope.engine.metrics.MetricsCalculator;
 import com.devscope.engine.metrics.MetricSnapshot;
 import com.devscope.engine.rulesengine.RuleContext;
 import com.devscope.engine.rulesengine.RuleResult;
