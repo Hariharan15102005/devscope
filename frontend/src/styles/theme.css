@@ -204,6 +204,19 @@ body,
 .ds-total-row {
   border-top: 1px solid var(--ds-border);
   padding-top: 8px;
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.ds-total-row > span {
+  grid-column: 2;
+  color: var(--ds-muted);
+}
+
+.ds-total-row > strong {
+  grid-column: 3;
 }
 
 .ds-dot {
