@@ -13,6 +13,19 @@ public final class ZipExtractor {
     private ZipExtractor() {
     }
 
+    public static Path extractToTemp(Path zipPath) {
+        if (zipPath == null) {
+            throw new AnalysisException("Zip path is required");
+        }
+
+        try {
+            Path targetDirectory = Files.createTempDirectory("devscope-extracted-");
+            return extract(zipPath, targetDirectory);
+        } catch (IOException exception) {
+            throw new AnalysisException("Failed to prepare temp extraction directory", exception);
+        }
+    }
+
     public static Path extract(Path zipPath, Path targetDirectory) {
         if (zipPath == null || targetDirectory == null) {
             throw new AnalysisException("Zip path and target directory are required");
@@ -23,12 +36,14 @@ public final class ZipExtractor {
             try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(zipPath))) {
                 ZipEntry entry;
                 while ((entry = zis.getNextEntry()) != null) {
-                    Path outputPath = targetDirectory.resolve(entry.getName()).normalize();
+                    String normalizedEntryName = entry.getName().replace('\\', '/');
+                    Path outputPath = targetDirectory.resolve(normalizedEntryName).normalize();
                     if (!outputPath.startsWith(targetDirectory)) {
                         throw new AnalysisException("Invalid zip entry path");
                     }
 
-                    if (entry.isDirectory()) {
+                    boolean directoryEntry = entry.isDirectory() || normalizedEntryName.endsWith("/");
+                    if (directoryEntry) {
                         Files.createDirectories(outputPath);
                     } else {
                         Path parent = outputPath.getParent();

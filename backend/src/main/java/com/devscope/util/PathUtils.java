@@ -11,7 +11,7 @@ public final class PathUtils {
         if (path == null || path.getFileName() == null) {
             return false;
         }
-        return path.getFileName().toString().endsWith(".java");
+        return path.getFileName().toString().toLowerCase().endsWith(".java");
     }
 
     public static String normalizePackage(Path sourceRoot, Path javaFile) {

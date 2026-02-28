@@ -11,7 +11,7 @@ const defaultFilters = {
 const allowedImpact = ['HIGH', 'MEDIUM', 'LOW'];
 const allowedCategory = ['COMPLEXITY', 'COUPLING', 'LAYERING', 'CYCLE'];
 
-export default function useInsights(projectId) {
+export default function useInsights(analysisId) {
   const [insights, setInsights] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -19,7 +19,7 @@ export default function useInsights(projectId) {
   const [selectedInsightId, setSelectedInsightId] = useState(null);
 
   const refetch = useCallback(async () => {
-    if (!projectId) {
+    if (!analysisId) {
       setInsights([]);
       return;
     }
@@ -27,14 +27,14 @@ export default function useInsights(projectId) {
     try {
       setLoading(true);
       setError('');
-      const response = await insightApi.getInsights(projectId);
+      const response = await insightApi.getInsights(analysisId);
       setInsights(Array.isArray(response) ? response : []);
     } catch (err) {
       setError(err.message || 'Unable to load insights.');
     } finally {
       setLoading(false);
     }
-  }, [projectId]);
+  }, [analysisId]);
 
   useEffect(() => {
     refetch();

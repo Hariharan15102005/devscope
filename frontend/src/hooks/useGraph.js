@@ -6,7 +6,7 @@ const defaultFilters = {
   showCyclesOnly: false,
 };
 
-export default function useGraph(projectId) {
+export default function useGraph(analysisId) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [graph, setGraph] = useState({ nodes: [], edges: [] });
@@ -15,7 +15,7 @@ export default function useGraph(projectId) {
   const [highlightedCycles, setHighlightedCycles] = useState(false);
 
   const refetch = useCallback(async () => {
-    if (!projectId) {
+    if (!analysisId) {
       setGraph({ nodes: [], edges: [] });
       return;
     }
@@ -23,7 +23,7 @@ export default function useGraph(projectId) {
     try {
       setLoading(true);
       setError('');
-      const response = await graphApi.getGraph(projectId);
+      const response = await graphApi.getGraph(analysisId);
       setGraph({
         nodes: response.nodes || [],
         edges: response.edges || [],
@@ -33,7 +33,7 @@ export default function useGraph(projectId) {
     } finally {
       setLoading(false);
     }
-  }, [projectId]);
+  }, [analysisId]);
 
   useEffect(() => {
     refetch();

@@ -9,7 +9,7 @@ import structureApi from '../api/structureApi';
 import { useProjectContext } from '../store/ProjectContext';
 
 export default function StructureExplorer() {
-  const { projectId } = useProjectContext();
+  const { analysisId } = useProjectContext();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,7 +38,7 @@ export default function StructureExplorer() {
       setLoadingTree(true);
       setError('');
       try {
-        const response = await structureApi.getTree(projectId, filterType || undefined);
+        const response = await structureApi.getTree(analysisId, filterType || undefined);
         if (!active) {
           return;
         }
@@ -67,7 +67,7 @@ export default function StructureExplorer() {
     return () => {
       active = false;
     };
-  }, [projectId, filterType, retryToken]);
+  }, [analysisId, filterType, retryToken]);
 
   useEffect(() => {
     setSelectedClassName(selectedClass || null);
@@ -81,7 +81,7 @@ export default function StructureExplorer() {
 
     setLoadingDetail(true);
     try {
-      const detail = await structureApi.getClassDetail(projectId, className);
+      const detail = await structureApi.getClassDetail(analysisId, className);
       setSelectedClassDetail(detail);
     } catch {
       setSelectedClassDetail(null);
@@ -97,7 +97,7 @@ export default function StructureExplorer() {
     }
 
     setSelectedClassDetail(null);
-  }, [projectId, selectedClassName]);
+  }, [analysisId, selectedClassName]);
 
   useEffect(() => {
     if (!selectedClassName || !treeData.length) {

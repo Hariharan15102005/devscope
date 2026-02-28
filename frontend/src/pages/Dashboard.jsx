@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import BarChart from '../components/charts/BarChart';
 import ChartContainer from '../components/charts/ChartContainer';
 import PieChart from '../components/charts/PieChart';
@@ -10,6 +10,7 @@ import StatCard from '../components/common/StatCard';
 import MainLayout from '../layouts/MainLayout';
 import useDashboard from '../hooks/useDashboard';
 import { useProjectContext } from '../store/ProjectContext';
+import uploadApi from '../api/uploadApi';
 
 function getCountTone(value) {
   if (value <= 0) return 'red';
@@ -30,9 +31,40 @@ function getHealthTone(value) {
 }
 
 export default function Dashboard() {
-  const { projectId } = useProjectContext();
-  const { data, loading, error, refetch } = useDashboard(projectId);
+  const { analysisId, setAnalysisId } = useProjectContext();
+  const { data, loading, error, refetch } = useDashboard(analysisId);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [zipFile, setZipFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const analysisIdFromQuery = Number(params.get('analysisId'));
+    if (analysisIdFromQuery > 0 && analysisIdFromQuery !== analysisId) {
+      setAnalysisId(analysisIdFromQuery);
+    }
+  }, [location.search, analysisId, setAnalysisId]);
+
+  async function handleUpload() {
+    if (!zipFile) {
+      setUploadError('Please choose a ZIP file to upload.');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setUploadError('');
+      const response = await uploadApi.uploadProjectZip(zipFile);
+      setAnalysisId(response.analysisId);
+      navigate(`/?analysisId=${encodeURIComponent(response.analysisId)}`, { replace: true });
+    } catch (err) {
+      setUploadError(err.message || 'Failed to upload ZIP project.');
+    } finally {
+      setUploading(false);
+    }
+  }
 
   const navigateToStructure = (search = '') => {
     navigate(`/structure${search}`, { state: { fromDashboard: true } });
@@ -91,6 +123,21 @@ export default function Dashboard() {
     <MainLayout title="Dashboard">
       <section className="ds-breadcrumb">Dashboard</section>
 
+      <section className="ds-card">
+        <h3>Upload Java Project ZIP</h3>
+        <div className="ds-compare-selectors">
+          <input
+            type="file"
+            accept=".zip,application/zip"
+            onChange={(event) => setZipFile(event.target.files?.[0] || null)}
+          />
+          <button type="button" className="ds-btn" onClick={handleUpload} disabled={uploading}>
+            {uploading ? 'Analyzing...' : 'Upload & Analyze'}
+          </button>
+        </div>
+        {uploadError ? <p className="ds-error-box">{uploadError}</p> : null}
+      </section>
+
       <section className="ds-grid ds-stats-grid">
         <StatCard
           label="Total Packages"
@@ -101,7 +148,7 @@ export default function Dashboard() {
         />
         <StatCard
           label="Total Classes"
-          value={data.totalClasses}
+          value={data.summary?.totalClasses ?? data.totalClasses}
           icon="📄"
           tone={getCountTone(data.totalClasses)}
           tooltip="Total number of classes"
@@ -116,16 +163,16 @@ export default function Dashboard() {
         />
         <StatCard
           label="Total Dependencies"
-          value={data.totalDependencies}
+          value={data.summary?.totalDependencies ?? data.totalDependencies}
           icon="🔗"
           tone={getDependencyTone(data.totalDependencies)}
           tooltip="Total dependency edges"
         />
         <StatCard
           label="Health Score"
-          value={data.healthScore}
+          value={data.summary?.healthScore ?? data.healthScore}
           icon="❤️"
-          tone={getHealthTone(data.healthScore)}
+          tone={getHealthTone(data.summary?.healthScore ?? data.healthScore)}
           tooltip="Overall project health score"
         />
       </section>
@@ -198,7 +245,7 @@ export default function Dashboard() {
               className="ds-cycle-button"
               onClick={() => navigate('/graph?highlight=cycles')}
             >
-              {data.cyclicDependenciesCount}
+              {data.summary?.cyclicDependencyCount ?? data.cyclicDependenciesCount}
             </button>
           </article>
         </div>

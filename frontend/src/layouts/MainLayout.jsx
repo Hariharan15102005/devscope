@@ -13,14 +13,14 @@ const links = [
 
 export default function MainLayout({ children, title = 'DevScope' }) {
   const location = useLocation();
-  const { projectId } = useProjectContext();
+  const { analysisId } = useProjectContext();
 
   return (
     <div className="ds-shell">
       <aside className="ds-sidebar">
         <h1>DevScope</h1>
         <nav>
-          {links.filter((item) => !item.requiresProject || projectId).map((item) => (
+          {links.filter((item) => !item.requiresProject || analysisId).map((item) => (
             <Link
               key={item.to}
               className={`ds-nav-link ${location.pathname === item.to ? 'active' : ''}`}

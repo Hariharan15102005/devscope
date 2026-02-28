@@ -27,7 +27,7 @@ const categoryOptions = [
 ];
 
 export default function InsightsPage() {
-  const { projectId } = useProjectContext();
+  const { analysisId } = useProjectContext();
   const location = useLocation();
 
   const {
@@ -43,7 +43,7 @@ export default function InsightsPage() {
     setSelectedInsightId,
     summary,
     applyQueryParams,
-  } = useInsights(projectId);
+  } = useInsights(analysisId);
 
   useEffect(() => {
     applyQueryParams(location.search);

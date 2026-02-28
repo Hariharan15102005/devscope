@@ -5,6 +5,7 @@ import com.devscope.service.InsightsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +22,13 @@ public class InsightsController {
         this.insightsService = insightsService;
     }
 
-    @GetMapping("/{projectId}")
-    public List<InsightResponse> getInsights(@PathVariable String projectId) {
-        return insightsService.getInsights(projectId);
+    @GetMapping("/{analysisId}")
+    public List<InsightResponse> getInsights(@PathVariable Long analysisId) {
+        return insightsService.getInsights(analysisId);
+    }
+
+    @GetMapping(params = "analysisId")
+    public List<InsightResponse> getInsightsByQuery(@RequestParam Long analysisId) {
+        return insightsService.getInsights(analysisId);
     }
 }

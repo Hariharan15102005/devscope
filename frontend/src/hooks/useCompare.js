@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import compareApi from '../api/compareApi';
 
-export default function useCompare(projectId) {
+export default function useCompare(analysisId) {
   const [versions, setVersions] = useState([]);
   const [selectedVersions, setSelectedVersions] = useState({ base: '', target: '' });
   const [comparisonData, setComparisonData] = useState(null);
@@ -9,14 +9,14 @@ export default function useCompare(projectId) {
   const [error, setError] = useState('');
 
   const loadVersions = useCallback(async () => {
-    if (!projectId) {
+    if (!analysisId) {
       setVersions([]);
       return;
     }
 
     try {
       setError('');
-      const response = await compareApi.getVersions(projectId);
+      const response = await compareApi.getVersions(analysisId);
       const data = Array.isArray(response) ? response : [];
       setVersions(data);
 
@@ -29,7 +29,7 @@ export default function useCompare(projectId) {
     } catch (err) {
       setError(err.message || 'Unable to load analysis versions.');
     }
-  }, [projectId]);
+  }, [analysisId]);
 
   useEffect(() => {
     loadVersions();

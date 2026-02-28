@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import dashboardApi from '../api/dashboardApi';
 
-export default function useDashboard(projectId) {
+export default function useDashboard(analysisId) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const fetchDashboard = useCallback(async () => {
-    if (!projectId) {
+    if (!analysisId) {
       setData(null);
       return;
     }
@@ -15,14 +15,14 @@ export default function useDashboard(projectId) {
     try {
       setLoading(true);
       setError('');
-      const summary = await dashboardApi.getSummary(projectId);
+      const summary = await dashboardApi.getSummary(analysisId);
       setData(summary);
     } catch (err) {
       setError(err.message || 'Unable to load dashboard data.');
     } finally {
       setLoading(false);
     }
-  }, [projectId]);
+  }, [analysisId]);
 
   useEffect(() => {
     fetchDashboard();

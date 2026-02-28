@@ -4,8 +4,12 @@ const ProjectContext = createContext(null);
 
 export function ProjectProvider({ children }) {
   const [projectId, setProjectId] = useState('devscope-demo');
+  const [analysisId, setAnalysisId] = useState(1);
 
-  const value = useMemo(() => ({ projectId, setProjectId }), [projectId]);
+  const value = useMemo(
+    () => ({ projectId, setProjectId, analysisId, setAnalysisId }),
+    [projectId, analysisId]
+  );
 
   return <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>;
 }

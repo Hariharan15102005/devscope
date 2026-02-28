@@ -5,6 +5,7 @@ import com.devscope.service.DashboardService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,8 +20,13 @@ public class DashboardController {
         this.dashboardService = dashboardService;
     }
 
-    @GetMapping("/{projectId}")
-    public DashboardResponse getSummary(@PathVariable String projectId) {
-        return dashboardService.getDashboardSummary(projectId);
+    @GetMapping("/{analysisId}")
+    public DashboardResponse getSummary(@PathVariable Long analysisId) {
+        return dashboardService.getDashboardSummary(analysisId);
+    }
+
+    @GetMapping(params = "analysisId")
+    public DashboardResponse getSummaryByQuery(@RequestParam Long analysisId) {
+        return dashboardService.getDashboardSummary(analysisId);
     }
 }

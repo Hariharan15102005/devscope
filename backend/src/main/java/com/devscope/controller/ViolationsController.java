@@ -5,6 +5,7 @@ import com.devscope.service.ViolationsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +22,13 @@ public class ViolationsController {
         this.violationsService = violationsService;
     }
 
-    @GetMapping("/{projectId}")
-    public List<ViolationResponse> getViolations(@PathVariable String projectId) {
-        return violationsService.getViolations(projectId);
+    @GetMapping("/{analysisId}")
+    public List<ViolationResponse> getViolations(@PathVariable Long analysisId) {
+        return violationsService.getViolations(analysisId);
+    }
+
+    @GetMapping(params = "analysisId")
+    public List<ViolationResponse> getViolationsByQuery(@RequestParam Long analysisId) {
+        return violationsService.getViolations(analysisId);
     }
 }

@@ -27,7 +27,7 @@ const typeOptions = [
 ];
 
 export default function ViolationsPage() {
-  const { projectId } = useProjectContext();
+  const { analysisId } = useProjectContext();
   const location = useLocation();
 
   const {
@@ -45,7 +45,7 @@ export default function ViolationsPage() {
     toggleSeveritySortDirection,
     applyQueryParams,
     summary,
-  } = useViolations(projectId);
+  } = useViolations(analysisId);
 
   useEffect(() => {
     applyQueryParams(location.search);

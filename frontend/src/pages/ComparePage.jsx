@@ -13,7 +13,7 @@ import MainLayout from '../layouts/MainLayout';
 import { useProjectContext } from '../store/ProjectContext';
 
 export default function ComparePage() {
-  const { projectId } = useProjectContext();
+  const { analysisId } = useProjectContext();
   const location = useLocation();
 
   const {
@@ -26,7 +26,7 @@ export default function ComparePage() {
     executeCompare,
     applyQueryParams,
     riskDistribution,
-  } = useCompare(projectId);
+  } = useCompare(analysisId);
 
   useEffect(() => {
     const query = applyQueryParams(location.search);

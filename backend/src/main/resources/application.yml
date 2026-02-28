@@ -1,6 +1,11 @@
 spring:
   application:
     name: devscope
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
   datasource:
     url: jdbc:h2:mem:devscope;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver

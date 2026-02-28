@@ -14,7 +14,7 @@ const severityWeight = {
   LOW: 1,
 };
 
-export default function useViolations(projectId) {
+export default function useViolations(analysisId) {
   const [violations, setViolations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -23,7 +23,7 @@ export default function useViolations(projectId) {
   const [severitySortDirection, setSeveritySortDirection] = useState('desc');
 
   const refetch = useCallback(async () => {
-    if (!projectId) {
+    if (!analysisId) {
       setViolations([]);
       return;
     }
@@ -31,14 +31,14 @@ export default function useViolations(projectId) {
     try {
       setLoading(true);
       setError('');
-      const data = await violationApi.getViolations(projectId);
+      const data = await violationApi.getViolations(analysisId);
       setViolations(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message || 'Unable to load violations.');
     } finally {
       setLoading(false);
     }
-  }, [projectId]);
+  }, [analysisId]);
 
   useEffect(() => {
     refetch();

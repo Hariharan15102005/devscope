@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DashboardResponse {
+    private Long analysisId;
+    private Summary summary;
+    private List<RiskOverviewItem> riskOverview;
     private int totalPackages;
     private int totalClasses;
     private int totalFiles;
@@ -14,6 +17,30 @@ public class DashboardResponse {
     private List<RiskyClassItem> topRiskyClasses;
     private List<ViolationItem> topViolations;
     private int cyclicDependenciesCount;
+
+    public Long getAnalysisId() {
+        return analysisId;
+    }
+
+    public void setAnalysisId(Long analysisId) {
+        this.analysisId = analysisId;
+    }
+
+    public Summary getSummary() {
+        return summary;
+    }
+
+    public void setSummary(Summary summary) {
+        this.summary = summary;
+    }
+
+    public List<RiskOverviewItem> getRiskOverview() {
+        return riskOverview;
+    }
+
+    public void setRiskOverview(List<RiskOverviewItem> riskOverview) {
+        this.riskOverview = riskOverview;
+    }
 
     public int getTotalPackages() {
         return totalPackages;
@@ -95,6 +122,14 @@ public class DashboardResponse {
         this.cyclicDependenciesCount = cyclicDependenciesCount;
     }
 
+    public int getCyclicDependencyCount() {
+        return cyclicDependenciesCount;
+    }
+
+    public void setCyclicDependencyCount(int cyclicDependencyCount) {
+        this.cyclicDependenciesCount = cyclicDependencyCount;
+    }
+
     public static class RiskyClassItem {
         private String className;
         private int riskScore;
@@ -121,6 +156,93 @@ public class DashboardResponse {
 
         public void setRiskScore(int riskScore) {
             this.riskScore = riskScore;
+        }
+    }
+
+    public static class Summary {
+        private int totalClasses;
+        private int totalDependencies;
+        private int totalViolations;
+        private int cyclicDependencyCount;
+        private int healthScore;
+
+        public int getTotalClasses() {
+            return totalClasses;
+        }
+
+        public void setTotalClasses(int totalClasses) {
+            this.totalClasses = totalClasses;
+        }
+
+        public int getTotalDependencies() {
+            return totalDependencies;
+        }
+
+        public void setTotalDependencies(int totalDependencies) {
+            this.totalDependencies = totalDependencies;
+        }
+
+        public int getTotalViolations() {
+            return totalViolations;
+        }
+
+        public void setTotalViolations(int totalViolations) {
+            this.totalViolations = totalViolations;
+        }
+
+        public int getCyclicDependencyCount() {
+            return cyclicDependencyCount;
+        }
+
+        public void setCyclicDependencyCount(int cyclicDependencyCount) {
+            this.cyclicDependencyCount = cyclicDependencyCount;
+        }
+
+        public int getHealthScore() {
+            return healthScore;
+        }
+
+        public void setHealthScore(int healthScore) {
+            this.healthScore = healthScore;
+        }
+    }
+
+    public static class RiskOverviewItem {
+        private String className;
+        private String riskLevel;
+        private String reason;
+
+        public RiskOverviewItem() {
+        }
+
+        public RiskOverviewItem(String className, String riskLevel, String reason) {
+            this.className = className;
+            this.riskLevel = riskLevel;
+            this.reason = reason;
+        }
+
+        public String getClassName() {
+            return className;
+        }
+
+        public void setClassName(String className) {
+            this.className = className;
+        }
+
+        public String getRiskLevel() {
+            return riskLevel;
+        }
+
+        public void setRiskLevel(String riskLevel) {
+            this.riskLevel = riskLevel;
+        }
+
+        public String getReason() {
+            return reason;
+        }
+
+        public void setReason(String reason) {
+            this.reason = reason;
         }
     }
 

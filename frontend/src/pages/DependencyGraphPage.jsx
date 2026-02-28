@@ -11,7 +11,7 @@ import MainLayout from '../layouts/MainLayout';
 import { useProjectContext } from '../store/ProjectContext';
 
 export default function DependencyGraphPage() {
-  const { projectId } = useProjectContext();
+  const { analysisId } = useProjectContext();
   const location = useLocation();
   const graphRef = useRef(null);
 
@@ -31,7 +31,7 @@ export default function DependencyGraphPage() {
     setHighlightedCycles,
     layerOptions,
     applyQueryParams,
-  } = useGraph(projectId);
+  } = useGraph(analysisId);
 
   useEffect(() => {
     if (!nodes.length) {

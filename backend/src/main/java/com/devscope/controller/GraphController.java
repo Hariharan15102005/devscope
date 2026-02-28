@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,17 +23,22 @@ public class GraphController {
         this.graphService = graphService;
     }
 
-    @GetMapping("/{projectId}")
-    public GraphResponse getGraph(@PathVariable String projectId) {
-        return graphService.getGraph(projectId);
+    @GetMapping("/{analysisId}")
+    public GraphResponse getGraph(@PathVariable Long analysisId) {
+        return graphService.getGraph(analysisId);
     }
 
-    @GetMapping("/{projectId}/node/{nodeId}")
+    @GetMapping(params = "analysisId")
+    public GraphResponse getGraphByQuery(@RequestParam Long analysisId) {
+        return graphService.getGraph(analysisId);
+    }
+
+    @GetMapping("/{analysisId}/node/{nodeId}")
     public ResponseEntity<GraphNodeDetailResponse> getNodeDetail(
-            @PathVariable String projectId,
+            @PathVariable Long analysisId,
             @PathVariable String nodeId
     ) {
-        GraphNodeDetailResponse detail = graphService.getNodeDetails(projectId, nodeId);
+        GraphNodeDetailResponse detail = graphService.getNodeDetails(analysisId, nodeId);
         if (detail == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
