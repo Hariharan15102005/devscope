@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import org.springframework.lang.NonNull;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,14 +82,16 @@ public class CompareService {
         return response;
     }
 
-    public List<String> getAvailableAnalyses(Long analysisId) {
+    public List<String> getAvailableAnalyses(@NonNull Long analysisId) {
+        Objects.requireNonNull(analysisId, "analysisId is required");
         AnalysisRun run = analysisRunRepository.findById(analysisId)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown analysisId: " + analysisId));
         String projectKey = run.getProject().getProjectKey();
         return analysisRunRepository.findByProject_ProjectKeyOrderByCreatedAtDesc(projectKey).stream()
-                .map(AnalysisRun::getId)
-                .map(String::valueOf)
-                .toList();
+            .map(AnalysisRun::getId)
+            .filter(Objects::nonNull)
+            .map(String::valueOf)
+            .toList();
     }
 
     private int riskScore(List<com.devscope.model.MetricEntity> metrics) {

@@ -43,6 +43,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -115,7 +116,19 @@ public class AnalysisService {
                 javaFiles.stream().limit(20).forEach(p -> log.debug("Java file: {}", p));
             }
             if (javaFiles.isEmpty()) {
-                throw new AnalysisException("No Java source files found inside uploaded ZIP");
+                // Collect a short listing of extracted files to aid debugging client uploads
+                try (var stream = Files.walk(extractedRoot)) {
+                    var sample = stream
+                            .filter(Files::isRegularFile)
+                            .map(p -> extractedRoot.relativize(p).toString())
+                            .limit(50)
+                            .toList();
+                    log.warn("No Java files found in uploaded archive. Sample contents: {}", sample);
+                    throw new AnalysisException("No Java source files found inside uploaded ZIP; sample contents: " + sample);
+                } catch (IOException ioe) {
+                    log.warn("No Java files and failed to list extracted contents", ioe);
+                    throw new AnalysisException("No Java source files found inside uploaded ZIP");
+                }
             }
 
             List<ParsedJavaClass> parsedClasses = javaParserEngine.parseFiles(extractedRoot, javaFiles);
@@ -178,7 +191,7 @@ public class AnalysisService {
             entity.setAnnotationType(parsed.getAnnotations().isEmpty() ? "None" : parsed.getAnnotations().get(0));
             return entity;
         }).toList();
-        javaClassRepository.saveAll(classEntities);
+        javaClassRepository.saveAll(Objects.requireNonNull(classEntities));
     }
 
     private void saveDependencies(AnalysisRun run, DependencyGraph graph, List<List<String>> cycles) {
@@ -200,7 +213,7 @@ public class AnalysisService {
                 }))
                 .toList();
 
-        dependencyRepository.saveAll(dependencyEntities);
+        dependencyRepository.saveAll(Objects.requireNonNull(dependencyEntities));
     }
 
     private void saveMetrics(AnalysisRun run, Map<String, MetricSnapshot> metricsByClass) {
@@ -215,7 +228,7 @@ public class AnalysisService {
             return entity;
         }).toList();
 
-        metricRepository.saveAll(metricEntities);
+        metricRepository.saveAll(Objects.requireNonNull(metricEntities));
     }
 
     private void saveViolations(AnalysisRun run, RuleResult ruleResult) {
@@ -232,7 +245,7 @@ public class AnalysisService {
             return entity;
         }).toList();
 
-        violationRepository.saveAll(entities);
+        violationRepository.saveAll(Objects.requireNonNull(entities));
     }
 
     private void saveInsights(AnalysisRun run, List<InsightGenerator.InsightRecommendation> insights) {
@@ -250,7 +263,7 @@ public class AnalysisService {
             return entity;
         }).toList();
 
-        insightRepository.saveAll(entities);
+        insightRepository.saveAll(Objects.requireNonNull(entities));
     }
 
     private void deleteIfExists(Path path) {

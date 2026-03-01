@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -32,11 +33,21 @@ public class UploadController {
             throw new IllegalArgumentException("File is empty");
         }
 
-        if (file.getOriginalFilename() == null || !file.getOriginalFilename().toLowerCase().endsWith(".zip")) {
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || !originalFilename.toLowerCase(Locale.ROOT).endsWith(".zip")) {
             throw new IllegalArgumentException("Only ZIP files allowed");
         }
 
-        log.info("File received: {}", file.getOriginalFilename());
+        log.info("File received: {}", originalFilename);
+        // Log some request header indicators to aid diagnosing browser failures
+        try {
+            var reqHeaders = org.springframework.web.context.request.RequestContextHolder.getRequestAttributes();
+            if (reqHeaders != null) {
+                log.debug("Upload request attributes present: {}", reqHeaders.getClass().getName());
+            }
+        } catch (Exception e) {
+            log.debug("Unable to read request attributes for upload logging", e);
+        }
 
         Long analysisId = analysisService.processUpload(file);
 

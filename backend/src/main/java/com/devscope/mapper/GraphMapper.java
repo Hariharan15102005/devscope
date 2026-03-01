@@ -16,8 +16,8 @@ public class GraphMapper {
         Map<String, Integer> incoming = new HashMap<>();
 
         for (DependencyEntity dependency : dependencies) {
-            outgoing.merge(dependency.getSourceClass(), 1, Integer::sum);
-            incoming.merge(dependency.getTargetClass(), 1, Integer::sum);
+            outgoing.merge(dependency.getSourceClass(), 1, (a, b) -> a + b);
+            incoming.merge(dependency.getTargetClass(), 1, (a, b) -> a + b);
         }
 
         GraphResponse response = new GraphResponse();
